@@ -4,13 +4,11 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Setter
 @Getter
-//@ToString
+@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,14 +23,4 @@ public class Authority implements GrantedAuthority {
     @Column(name = "AUTHORITY", nullable = false, unique = true)
     private String authority;
 
-    @ManyToMany(mappedBy = "authorities")
-    private Set<User> users = new HashSet<>();
-
-    @Override
-    public String toString() {
-        return "Authority{" +
-                "id=" + id +
-                ", authority='" + authority + '\'' +
-                '}';
-    }
 }

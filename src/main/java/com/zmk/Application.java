@@ -8,6 +8,7 @@ import com.zmk.exception.MobilePhoneAlreadyExistsException;
 import com.zmk.exception.UsernameAlreadyExistsException;
 import com.zmk.service.AuthorityService;
 import com.zmk.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 @SpringBootApplication
+@Log4j2
 public class Application implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -38,7 +40,7 @@ public class Application implements CommandLineRunner {
         try {
             authorityService.createAuthority(adminAuthority);
         } catch (AuthorityAlreadyExistsException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
         }
 
         Authority userAuthority = new Authority();
@@ -47,7 +49,7 @@ public class Application implements CommandLineRunner {
         try {
             authorityService.createAuthority(userAuthority);
         } catch (AuthorityAlreadyExistsException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
         }
 
         authorityService.loadAllAuthorities().forEach(System.out::println);
@@ -68,7 +70,7 @@ public class Application implements CommandLineRunner {
         try {
             userService.createUser(admin);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | MobilePhoneAlreadyExistsException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
         }
         userService.loadAllUsers().forEach(System.out::println);
 

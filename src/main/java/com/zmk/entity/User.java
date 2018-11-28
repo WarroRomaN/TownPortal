@@ -41,10 +41,7 @@ public class User implements UserDetails {
     @Column(name = "BIRTHDAY", nullable = false)
     private Date birthday;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_AUTHORITY",
-            joinColumns = {@JoinColumn(name = "USER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID")})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Authority> authorities = new HashSet<>();
 
     @Column(name = "DATE_REGISTRATION", nullable = false)
