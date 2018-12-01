@@ -11,11 +11,10 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-//@ToString
-@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "USR")
+@Table(name = "USER")
 public class User implements UserDetails {
 
     @Id
@@ -41,7 +40,10 @@ public class User implements UserDetails {
     @Column(name = "BIRTHDAY", nullable = false)
     private Date birthday;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ElementCollection(targetClass = Authority.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "USER_AUTHORITY", joinColumns = @JoinColumn(name = "USER_ID"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "AUTHORITY_ID", nullable = false)
     private Set<Authority> authorities = new HashSet<>();
 
     @Column(name = "DATE_REGISTRATION", nullable = false)
@@ -62,22 +64,4 @@ public class User implements UserDetails {
     @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthday=" + birthday +
-                ", dateRegistration=" + dateRegistration +
-                ", mobilePhone='" + mobilePhone + '\'' +
-                ", accountNonExpired=" + accountNonExpired +
-                ", accountNonLocked=" + accountNonLocked +
-                ", credentialsNonExpired=" + credentialsNonExpired +
-                ", enabled=" + enabled +
-                '}';
-    }
 }

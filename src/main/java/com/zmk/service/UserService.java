@@ -6,8 +6,12 @@ import com.zmk.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -16,7 +20,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
+    @Transactional(readOnly = true)
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getUserByUsername(username);
         if (isUserNotFound(user)) {
@@ -25,6 +33,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public User loadUserByEmail(String email) throws EmailNotFoundException {
         User user = userRepository.getUserByEmail(email);
         if (isUserNotFound(user)) {
@@ -33,6 +42,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public User loadUserByMobilePhone(String mobilePhone) throws MobilePhoneNotFoundException {
         User user = userRepository.getUserByMobilePhone(mobilePhone);
         if (isUserNotFound(user)) {
@@ -45,6 +55,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public void createUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MobilePhoneAlreadyExistsException {
         if (!isUserNotFound(userRepository.getUserByUsername(user.getUsername()))) {
             throw new UsernameAlreadyExistsException("User with the username \"" + user.getUsername() + "\" already exists.");
@@ -55,7 +66,9 @@ public class UserService implements UserDetailsService {
         if (!isUserNotFound(userRepository.getUserByUsername(user.getUsername()))) {
             throw new MobilePhoneAlreadyExistsException("User with the mobile phone \"" + user.getMobilePhone() + "\" already exists.");
         }
-        userRepository.save(user);
+        user.setDateRegistration(Date.valueOf(LocalDate.now()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.saveAndFlush(user);
     }
 
     private boolean isUserNotFound(User user) {

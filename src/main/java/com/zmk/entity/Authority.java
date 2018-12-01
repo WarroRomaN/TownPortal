@@ -1,26 +1,18 @@
 package com.zmk.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-
-@Entity
-@Setter
 @Getter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "AUTHORITY")
-public class Authority implements GrantedAuthority {
+public enum Authority implements GrantedAuthority {
+    ADMIN(1L, "Admin"),
+    USER(2L, "User");
 
-    @Id
-    @GeneratedValue
-    @Column(name = "AUTHORITY_ID", nullable = false, unique = true)
     private Long id;
-
-    @Column(name = "AUTHORITY", nullable = false, unique = true)
     private String authority;
 
 }

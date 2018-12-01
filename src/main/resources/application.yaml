@@ -1,14 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/town_portal
-    username: postgres
+    url: jdbc:mysql://localhost:3306/TOWN_PORTAL
+    username: root
     password: 81868936
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc:
-          lob:
-            non_contextual_creation: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+  freemarker:
+    expose-request-attributes: true

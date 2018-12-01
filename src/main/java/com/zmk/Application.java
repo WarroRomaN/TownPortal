@@ -2,11 +2,9 @@ package com.zmk;
 
 import com.zmk.entity.Authority;
 import com.zmk.entity.User;
-import com.zmk.exception.AuthorityAlreadyExistsException;
 import com.zmk.exception.EmailAlreadyExistsException;
 import com.zmk.exception.MobilePhoneAlreadyExistsException;
 import com.zmk.exception.UsernameAlreadyExistsException;
-import com.zmk.service.AuthorityService;
 import com.zmk.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 
 @SpringBootApplication
@@ -26,41 +25,18 @@ public class Application implements CommandLineRunner {
     }
 
     @Autowired
-    private AuthorityService authorityService;
-
-    @Autowired
     private UserService userService;
 
     @Override
-    public void run(String... args) throws Exception {
-
-        Authority adminAuthority = new Authority();
-        adminAuthority.setId(9L);
-        adminAuthority.setAuthority("Admin");
-        try {
-            authorityService.createAuthority(adminAuthority);
-        } catch (AuthorityAlreadyExistsException e) {
-            log.warn(e.getMessage());
-        }
-
-        Authority userAuthority = new Authority();
-        userAuthority.setId(8L);
-        userAuthority.setAuthority("User");
-        try {
-            authorityService.createAuthority(userAuthority);
-        } catch (AuthorityAlreadyExistsException e) {
-            log.warn(e.getMessage());
-        }
-
-        authorityService.loadAllAuthorities().forEach(System.out::println);
+    public void run(String... args) {
 
         User admin = new User();
+        admin.setUsername("1Admin");
         admin.setAccountNonExpired(true);
         admin.setAccountNonLocked(true);
-        admin.setAuthorities(new HashSet<>(authorityService.loadAllAuthorities()));
-        admin.setBirthday(Date.valueOf("05/11/1995"));
+        admin.setAuthorities(new HashSet<>(Arrays.asList(Authority.values())));
+        admin.setBirthday(Date.valueOf(LocalDate.now()));
         admin.setEmail("1Admin@email.com");
-        admin.setDateRegistration(Date.valueOf(LocalDate.now()));
         admin.setMobilePhone("+380659832565");
         admin.setEnabled(true);
         admin.setFirstName("Artur");
